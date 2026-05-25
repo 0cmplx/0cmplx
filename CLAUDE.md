@@ -4,14 +4,21 @@ Research and experimental platform for testing AI agents, MCP servers, and tool 
 
 ## Repositories
 
-| Repo | Visibility | URL | Purpose |
-|---|---|---|---|
-| 0cmplx | Public | github.com/0cmplx/0cmplx | Central governance hub (this repo) |
-| engine | Public | github.com/0cmplx/engine | @0cmplx/engine: shared core (Pyodide, parsers, bridge, traps) |
-| cli | Public | github.com/0cmplx/cli | @0cmplx/cli: command-line interface |
-| server | Public | github.com/0cmplx/server | Hono API server + MCP protocol |
-| web | Public | github.com/0cmplx/web | Astro 6 + React 19 dashboard |
-| docs | Public | github.com/0cmplx/docs | Documentation site (@supaproxy/supadocs) |
+### Open source
+
+| Repo | URL | Purpose |
+|---|---|---|
+| 0cmplx | github.com/0cmplx/0cmplx | Central governance hub (this repo) |
+| engine | github.com/0cmplx/engine | @0cmplx/engine: shared core (Pyodide, parsers, bridge, traps) |
+| cli | github.com/0cmplx/cli | @0cmplx/cli: command-line interface |
+| docs | github.com/0cmplx/docs | Documentation site (@supaproxy/supadocs) |
+
+### Proprietary (cloud)
+
+| Repo | URL | Purpose |
+|---|---|---|
+| server | github.com/0cmplx/server | Hono API server + MCP protocol |
+| web | github.com/0cmplx/web | Astro 6 + React 19 dashboard |
 
 ## Local directories
 
