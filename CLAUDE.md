@@ -77,6 +77,7 @@ All skills are centralised in this repo. Run them from here regardless of which 
 | `/deploy` | Deploy services to the DigitalOcean production droplet |
 | `/dev` | Start local dev environment (server, web, CLI, Redis) |
 | `/ship` | Cross-repo commit, push, PR, and merge in one go |
+| `/learn` | Capture lessons from fixes into skills and memory. Run after every non-trivial fix before continuing. |
 
 ## Brand
 
