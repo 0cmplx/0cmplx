@@ -7,9 +7,9 @@ description: Deploy 0cmplx services to the Digital Ocean production droplet. Pul
 
 - Droplet: 142.93.47.151
 - SSH: root@142.93.47.151
-- Code: /opt/0cmplx/server, /opt/0cmplx/web
+- Code: /opt/0cmplx/server, /opt/0cmplx/web, /opt/0cmplx/docs
 - Services: 0cmplx-server.service, 0cmplx-web.service
-- Caddy: manages TLS for 0cmplx.com, api.0cmplx.com, mcp.0cmplx.com
+- Caddy: manages TLS for 0cmplx.com, api.0cmplx.com, mcp.0cmplx.com, docs.0cmplx.com
 
 ## Services
 
@@ -17,6 +17,7 @@ description: Deploy 0cmplx services to the Digital Ocean production droplet. Pul
 |---|---|---|---|---|
 | server | 0cmplx-server | 0cmplx/server | /opt/0cmplx/server | api.0cmplx.com |
 | web | 0cmplx-web | 0cmplx/web | /opt/0cmplx/web | 0cmplx.com |
+| docs | (static, Caddy) | 0cmplx/docs | /opt/0cmplx/docs | docs.0cmplx.com |
 
 ## Step 1: Pre-flight checks
 
@@ -88,6 +89,27 @@ curl -s -o /dev/null -w "%{http_code}" https://0cmplx.com
 **Deploy order** (if multiple services):
 1. Server first (API, others depend on it)
 2. Web
+
+### Docs (separate from server/web)
+
+Docs is a static site served by Caddy. It has no systemd service.
+
+```bash
+ssh root@142.93.47.151 "cd /opt/0cmplx/docs && git fetch origin 2>/dev/null && echo '--- docs ---' && git log HEAD..origin/main --oneline"
+```
+
+If there are changes:
+
+```bash
+ssh root@142.93.47.151 "cd /opt/0cmplx/docs && git pull origin main && npm install && npm run build"
+```
+
+No restart needed. Caddy serves `/opt/0cmplx/docs/dist-docs` as static files.
+
+Verify:
+```bash
+curl -s -o /dev/null -w "%{http_code}" https://docs.0cmplx.com
+```
 
 ## Step 4: Final verification
 
