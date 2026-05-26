@@ -36,29 +36,47 @@ Research and experimental platform for testing AI agents, MCP servers, and tool 
 
 ```
 CLI (thin client, public)
-  │
-  │  HTTPS + streaming
-  ▼
+  |
+  |  HTTPS + streaming
+  v
 Cloud API (api.0cmplx.com)
-  │
-  ▼
-Engine (Pyodide, parsers, bridge, traps) ← proprietary
-  │
-  ▼
+  |
+  v
+Engine (Pyodide, parsers, bridge, traps) <- proprietary
+  |
+  v
 User's API / Ephemeral DB
 ```
 
 - **Engine**: proprietary core. Pyodide sandbox, OpenAPI parser, relationship graph, host bridge, OWASP traps. Runs on our servers only.
 - **Server**: Hono + TypeScript, Redis, SQLite, DDD layers, DI via container.ts. Hosts the engine.
 - **Web**: Astro 6 + React 19 + Tailwind CSS 4. Dashboard at 0cmplx.com.
-- **CLI**: thin client to the cloud API. Authenticates via GitHub OAuth, streams results to terminal. Does not import the engine.
+- **CLI**: thin client to the cloud API. Authenticates via API tokens, interactive REPL shell. Does not import the engine.
 - **Docs**: @supaproxy/supadocs framework. Public.
+
+## Deployment
+
+- Droplet: 142.93.47.151 (Ubuntu 24.04, DigitalOcean London)
+- Code: /opt/0cmplx/server, /opt/0cmplx/web
+- Services: 0cmplx-server.service, 0cmplx-web.service, caddy.service
+- URLs: 0cmplx.com (web), api.0cmplx.com (server), mcp.0cmplx.com (MCP)
+- DNS: GoDaddy, A records for @, api, mcp
 
 ## npm packages
 
 | Package | Repo | Purpose |
 |---|---|---|
 | @0cmplx/cli | cli | Command-line client (public) |
+
+## Skills
+
+All skills are centralised in this repo. Run them from here regardless of which repo you are working in.
+
+| Skill | Purpose |
+|---|---|
+| `/deploy` | Deploy services to the DigitalOcean production droplet |
+| `/dev` | Start local dev environment (server, web, CLI, Redis) |
+| `/ship` | Cross-repo commit, push, PR, and merge in one go |
 
 ## Brand
 
