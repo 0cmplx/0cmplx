@@ -10,7 +10,13 @@ description: Start the local 0cmplx development environment. Kills stale process
 | Server | 3002 | /Users/Elvis/workspace/0cmplxHq/0cmplx-server |
 | Web | 4322 | /Users/Elvis/workspace/0cmplxHq/0cmplx-web |
 | CLI | - | /Users/Elvis/workspace/0cmplxHq/0cmplx-cli |
+| Docs | 3900 | /Users/Elvis/workspace/0cmplxHq/0cmplx-docs |
+| CLI Docs | 3901 | /Users/Elvis/workspace/0cmplxHq/0cmplx-cli-docs |
 | Redis | 6390 | Docker (server-redis-1) |
+
+## Important
+
+**Always run locally to test changes before suggesting deploy or ship.** This applies to all repos: server, web, CLI, docs.
 
 ## Step 1: Kill stale processes
 
@@ -76,7 +82,31 @@ Expected: `200`
 
 The web app reads `PUBLIC_API_URL` from env, defaults to `http://localhost:3002`.
 
-## Step 6: Link CLI (if not already linked)
+## Step 6: Start docs (if requested or changed)
+
+Only start docs sites if the user is working on documentation or explicitly requests it.
+
+Docs sites run on separate ports. Kill stale processes first:
+
+```bash
+lsof -ti:3900 2>/dev/null | xargs kill -9 2>/dev/null
+lsof -ti:3901 2>/dev/null | xargs kill -9 2>/dev/null
+```
+
+```bash
+cd /Users/Elvis/workspace/0cmplxHq/0cmplx-docs && PORT=3900 npx supadocs dev &
+cd /Users/Elvis/workspace/0cmplxHq/0cmplx-cli-docs && PORT=3901 npx supadocs dev &
+```
+
+Wait 3 seconds, then verify:
+```bash
+curl -s -o /dev/null -w "%{http_code}" http://localhost:3900/
+curl -s -o /dev/null -w "%{http_code}" http://localhost:3901/
+```
+
+Note: supadocs may ignore the PORT env var and default to 3900. If so, start them sequentially and the second will auto-increment to 3901.
+
+## Step 7: Link CLI (if not already linked)
 
 ```bash
 which 0cmplx || (cd /Users/Elvis/workspace/0cmplxHq/0cmplx-cli && npm run build && npm link)
@@ -89,7 +119,7 @@ CMPLX_API_URL=http://localhost:3002 0cmplx
 
 For production (default): `0cmplx` (uses https://api.0cmplx.com)
 
-## Step 7: Report
+## Step 8: Report
 
 ```
 0cmplx dev environment ready
