@@ -1,6 +1,6 @@
 # 0cmplx
 
-Research and experimental platform for testing AI agents, MCP servers, and tool integrations.
+Query composition engine for AI agents. Upload a SQL schema, ask questions in natural language, get answers from a sandboxed database.
 
 ## Repositories
 
@@ -35,32 +35,55 @@ Research and experimental platform for testing AI agents, MCP servers, and tool 
 ## Architecture
 
 ```
-CLI (thin client, public)
+CLI / MCP Client (e.g. Supaproxy)
   |
-  |  HTTPS + streaming
+  |  HTTPS + MCP protocol
   v
 Cloud API (api.0cmplx.com)
   |
   v
-Engine (Pyodide, parsers, bridge, traps) <- proprietary
+Engine (schema parser, relationship graph, query composer)
   |
   v
-User's API / Ephemeral DB
+Pyodide sandbox + ephemeral DB
 ```
 
-- **Engine**: proprietary core. Pyodide sandbox, OpenAPI parser, relationship graph, host bridge, OWASP traps. Runs on our servers only.
-- **Server**: Hono + TypeScript, Redis, SQLite, DDD layers, DI via container.ts. Hosts the engine.
+- **Engine**: proprietary core. SQL schema parser, relationship graph, query composition (natural language to SQL), Pyodide sandbox, OWASP security traps. Runs on our servers only.
+- **Server**: Hono + TypeScript, Redis, SQLite, DDD layers, DI via container.ts. Hosts the engine. Exposes MCP tools (query, mutate, describe).
 - **Web**: Astro 6 + React 19 + Tailwind CSS 4. Dashboard at 0cmplx.com.
-- **CLI**: thin client to the cloud API. Authenticates via API tokens, interactive REPL shell. Does not import the engine.
+- **CLI**: thin client to the cloud API. Authenticates via API tokens. Does not import the engine.
 - **Docs**: @supaproxy/supadocs framework. Public.
+
+## How 0cmplx works
+
+1. User uploads a SQL schema
+2. Engine parses tables, columns, FKs, constraints into a relationship graph
+3. MCP server exposes tools: `query`, `mutate`, `describe`
+4. Caller sends natural language (e.g. "Get status for user with phone +2781...")
+5. Engine composes SQL using schema knowledge, executes in sandboxed DB
+6. High confidence: executes immediately, returns data
+7. Low confidence: returns what it could not resolve, caller clarifies
+
+## 0cmplx and Supaproxy
+
+0cmplx is the infrastructure layer. Supaproxy is the governance layer. They connect via MCP.
+
+| | 0cmplx | Supaproxy |
+|---|---|---|
+| Knows | Database schema, relationships | Business rules, user context |
+| Decides | How to query the data | What to ask for and why |
+| Owns | Query composition, sandbox execution | Policy, compliance, routing |
+| Sells | "Give me your schema, ask me anything" | "Governed AI for your team" |
+
+Supaproxy tells 0cmplx exactly what to fetch, never why. 0cmplx returns data, never decisions. Neither product imports or depends on the other. MCP is the boundary.
 
 ## Deployment
 
 - Droplet: 142.93.47.151 (Ubuntu 24.04, DigitalOcean London)
-- Code: /opt/0cmplx/server, /opt/0cmplx/web
+- Code: /opt/0cmplx/server, /opt/0cmplx/web, /opt/0cmplx/docs
 - Services: 0cmplx-server.service, 0cmplx-web.service, caddy.service
-- URLs: 0cmplx.com (web), api.0cmplx.com (server), mcp.0cmplx.com (MCP)
-- DNS: GoDaddy, A records for @, api, mcp
+- URLs: 0cmplx.com (web), api.0cmplx.com (server), mcp.0cmplx.com (MCP), docs.0cmplx.com (docs)
+- DNS: GoDaddy, A records for @, api, mcp, docs
 
 ## npm packages
 
