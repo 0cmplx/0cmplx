@@ -101,6 +101,7 @@ All skills are centralised in this repo. Run them from here regardless of which 
 | `/dev` | Start local dev environment (server, web, CLI, Redis) |
 | `/ship` | Cross-repo commit, push, PR, and merge in one go |
 | `/learn` | Capture lessons from fixes into skills and memory. Run after every non-trivial fix before continuing. |
+| `/audit` | Audit codebase for DDD, SOLID, clean architecture, and 0cmplx conventions. |
 
 ## Brand
 
